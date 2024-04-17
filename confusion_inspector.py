@@ -1,32 +1,20 @@
-import fasttext
 import argparse
-import json
 from faq_core import FAQ
-
+from setence_transformers import SentenceTransformer
 
 parser = argparse.ArgumentParser()
-parser.add_argument("model_path", default="")
+parser.add_argument("--pretrained", default="", help="Pretrained model from the huggingface")
 parser.add_argument("--questions", default="data/diacritics/FAQv5_questions.csv", help="Question data file")
-parser.add_argument("--probs", default="", help="Word probabilities file path")
-parser.add_argument("--alpha", default=1e-4, type=float, help="Word embedding weighting factor")
-parser.add_argument("--compressed", default=False, action="store_true", help="Indicate if the used model was compressed using compress-fasttext")
 
 if __name__ == "__main__":
     args = parser.parse_args([] if "__file__" not in globals() else None)
 
-    if args.compressed:
-        import compress_fasttext
-        model = compress_fasttext.models.CompressedFastTextKeyedVectors.load(args.model_path)
+    if args.pretrained:
+        model = SentenceTransformer(args.pretrained)
     else:
-        model = fasttext.load_model(args.model_path)
+        print("Local models are not supported now!")
+        exit(0)
 
-    probs = None
-    if args.probs == "":
-        args.alpha = None
-    else:
-        with open(args.probs, "r") as wp_file:
-            probs = json.load(wp_file)
-
-    faq = FAQ(model, args.questions, probs=probs, alpha=args.alpha, compressed=args.compressed)
+    faq = FAQ(model, args.questions)
     faq.total_confusion()
 

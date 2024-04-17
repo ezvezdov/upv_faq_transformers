@@ -1,4 +1,3 @@
-import fasttext
 import numpy as np
 import pandas as pd
 import warnings
@@ -6,47 +5,16 @@ from sklearn.metrics import confusion_matrix
 import seaborn as sn
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
-import json
-import os
-#from nltk.tokenize import word_tokenize
-
-
-def extract_word_probs(model_path: str, corpus_size: int = 4.1e9):
-    """
-    Uses word occurence counts included in FT model and training corpus size to create a dict of 
-    word frequencies/probabilities and saves it to a json file inside current working directory
-    - Only uncompressed models are supported
-    """
-    model = fasttext.load_model(model_path)
-    words, freqs = model.get_words(include_freq=True)
-    probs = list(map(lambda x: float(x) / corpus_size, freqs))
-    word_probs = dict(zip(words, probs))
-    probs_path = os.path.splitext(os.path.basename(model_path))[0] + "_probs.json"
-    with open(probs_path, "w") as out:
-        json.dump(word_probs, out)
-    return probs_path
-
 
 class FAQ:
     def __init__(
             self, 
             model, 
             questions_path, 
-            answers_path=None,
-            probs=None, 
-            alpha=1e-4, 
-            compressed=False
+            answers_path=None
         ):
         self.model = model
         self.answers = None
-        self.sentence_embedding = self.mean_sentence_embedding
-        self.word_probs = probs
-        self.alpha = alpha
-
-        if compressed:
-            self.get_w_vec = self.model.word_vec
-        else:
-            self.get_w_vec = self.model.get_word_vector
 
         if questions_path.split(".")[1] == "xlsx":
             
@@ -63,9 +31,6 @@ class FAQ:
         elif answers_path:
             raise "Unsupported data file"
 
-        if alpha is not None and probs is not None:
-            self.sentence_embedding = self.weighted_sentence_embedding       
-
         # Create embedding database - matrix of embedding vectors for each question
         self.db = np.array([self.sentence_embedding(q) for q in self.questions["question"]])
 
@@ -80,36 +45,8 @@ class FAQ:
         if self.answers is not None:
             self.ans_db = np.array([self.sentence_embedding(a) for a in self.answers['answer']])
 
-    def default_sentence_embedding(self, sentence):
-        # Unsuported by compressed models, may be removed
-        embedding = self.model.get_sentence_vector(sentence.lower().replace('\n', ' '))
-        return embedding/np.linalg.norm(embedding)
-
-    def mean_sentence_embedding(self, sentence):
-        # Same as default, but computed manually
-        words = sentence.lower().replace('\n', ' ').split()
-        #words = word_tokenize(sentence)
-        wes = np.array([self.get_w_vec(w) for w in words])
-        wes /= np.linalg.norm(wes, axis=1)[:, np.newaxis] + 1e-9
-        se = np.mean(wes, axis=0)
-        return se/np.linalg.norm(se)
-
-    def weighted_sentence_embedding(self, sentence):
-        # Computes weighted sentence embedding acoording to: https://openreview.net/pdf?id=SyK00v5xx
-        def word_probability(word):
-            if word in self.word_probs.keys():
-                return self.word_probs[word]
-            return 0.0
-
-        words = sentence.lower().replace('\n', ' ').split()
-        #words = word_tokenize(sentence)
-        wes = np.array([self.get_w_vec(w) for w in words])
-        probs = np.array([word_probability(w) for w in words])[:, np.newaxis]
-        wes /= np.linalg.norm(wes, axis=1)[:, np.newaxis] + 1e-9
-        wes *= self.alpha / (self.alpha + probs)
-        #wes *= probs  # for probabilities of words from answer dataset 
-        se = np.mean(wes, axis=0)
-        return se/(np.linalg.norm(se) + 1e-9)
+    def sentence_embedding(self, s):
+        return self.model.encode(s, normalize_embeddings=True, show_progress_bar=False)
 
     def total_confusion(self):
         # Shows a heatmap of cosine similarities of all question pairs

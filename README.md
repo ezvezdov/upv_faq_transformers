@@ -4,17 +4,16 @@ Only supports fastText embeddings in .bin format
 
 ## Dependencies:
 
-- [fasttext](https://fasttext.cc/docs/en/python-module.html)
+- [sentence_transformers](https://www.sbert.net/)
 - [pandas](https://pandas.pydata.org)
 - [numpy](https://numpy.org/install/)
 - [scikit-learn](https://scikit-learn.org/stable/install.html)
 - [seaborn](https://seaborn.pydata.org/installing.html)
 - [matplotlib](https://matplotlib.org)
-- [compress-fasttext](https://github.com/avidale/compress-fasttext) (optional)
 
 ## Usage:
 
-    python3 faq_tests.py model_path [--questions question_dataset_path] [--answers answer_dataset_path] [--probs word_probs_path] [--alpha alpha] [--cmtime disp_time_seconds] [--cm] [--compressed] [--verb] [--save]
+    python3 faq_tests.py [--pretrained huggingface_model_name] [--questions question_dataset_path] [--answers answer_dataset_path] [--cmtime disp_time_seconds] [--cm] [--verb] [--save]
   
 ### Arguments:
 
@@ -24,16 +23,10 @@ Only supports fastText embeddings in .bin format
 
 - **answers**: Path to spreadsheet file with answers
 
-- **probs**: Path to vocabulary word frequencies - json file created using faq50.extract_word_probs
-
-- **alpha**: Word embedding weighting parameter - word embeddings will be weighted based on word frequencies, according to this [paper](https://openreview.net/pdf?id=SyK00v5xx)
-
 - **cmtime**: Cofusion matrix display duration in seconds
 
 - **cm**: Show confusion matrices during evaluation
 
-- **compressed**: Indicates usage of a compressed model created via [compress-fasttext](https://github.com/avidale/compress-fasttext)
-  
 - **verb**: Print incorrectly matched pairs in the following format:
 
     > Querry question : Incorrectly matched question (answer)
@@ -43,7 +36,7 @@ folder next to the evaluated model
 
 ## Confusion inspector:
 
-    python3 confusion_inspector.py model_path [--questions question_dataset_path] [--probs word_probs_path] [--alpha alpha] [--compressed]
+    python3 confusion_inspector.py [--pretrained huggingface_model_name] [--questions question_dataset_path] 
 
 Shows a similarity heatmap between all dataset questions. Click on a specific pixel in the heatmap to print 
 the corresponding pair of questions and their similarity value in the terminal.
