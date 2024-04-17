@@ -19,7 +19,7 @@ if __name__ == "__main__":
     args = parser.parse_args([] if "__file__" not in globals() else None)
     
     if args.pretrained:
-        model = SentenceTransformer(args.pretrained)
+        model = SentenceTransformer(args.pretrained, trust_remote_code=True)
     else:
         print("Local models are not supported now!")
         exit(0)
