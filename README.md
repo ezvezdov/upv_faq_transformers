@@ -1,7 +1,5 @@
 # UPV FAQ Semantic Text Similarity Test
 
-Only supports fastText embeddings in .bin format
-
 ## Dependencies:
 
 - [sentence_transformers](https://www.sbert.net/)
@@ -13,15 +11,17 @@ Only supports fastText embeddings in .bin format
 
 ## Usage:
 
-    python3 faq_tests.py [--pretrained huggingface_model_name] [--questions question_dataset_path] [--answers answer_dataset_path] [--cmtime disp_time_seconds] [--cm] [--verb] [--save]
+    python3 faq_tests.py [--pretrained huggingface_model_name] [--questions question_dataset_path] [--answers answer_dataset_path] [--cmtime disp_time_seconds] [--save_dir output_directory] [--filename results_filename] [--cm] [--verb]
   
 ### Arguments:
 
-- **model_path**: Path to the model to be evaluated
-
+- **pretrained**: Path to the model from the Huggingface website (in format username/modelname)
+  
 - **questions**: Path to spreadsheet file with questions
 
 - **answers**: Path to spreadsheet file with answers
+
+- **model_path**: Path to the model to be evaluated
 
 - **cmtime**: Cofusion matrix display duration in seconds
 
@@ -31,8 +31,9 @@ Only supports fastText embeddings in .bin format
 
     > Querry question : Incorrectly matched question (answer)
 
-- **save**: Save evaluation results, including optional confusion matrices, into an appropriately named 
-folder next to the evaluated model
+- **save_dir**: Directory, where results should be saved (Default: ./output/)
+
+- **filename**: Name of the file with evaluation results. (Default: Accuracies.log)
 
 ## Confusion inspector:
 
