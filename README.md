@@ -11,7 +11,7 @@
 
 ## Usage:
 
-    python3 faq_tests.py [--pretrained huggingface_model_name] [--questions question_dataset_path] [--answers answer_dataset_path] [--cmtime disp_time_seconds] [--save_dir output_directory] [--filename results_filename] [--cm] [--verb]
+    python3 faq_tests.py [--pretrained huggingface_model_name] [--questions question_dataset_path] [--answers answer_dataset_path] [--cmtime disp_time_seconds] [--save_dir output_directory] [--filename results_filename] [--cm] [--verb] [--trust_remote_code]
   
 ### Arguments:
 
@@ -34,10 +34,12 @@
 - **save_dir**: Directory, where results should be saved (Default: ./output/)
 
 - **filename**: Name of the file with evaluation results. (Default: Accuracies.log)
+  
+- **trust_remote_code**: 
 
 ## Confusion inspector:
 
-    python3 confusion_inspector.py [--pretrained huggingface_model_name] [--questions question_dataset_path] 
+    python3 confusion_inspector.py [--pretrained huggingface_model_name] [--questions question_dataset_path] [--trust_remote_code]
 
 Shows a similarity heatmap between all dataset questions. Click on a specific pixel in the heatmap to print 
 the corresponding pair of questions and their similarity value in the terminal.

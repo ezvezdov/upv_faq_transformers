@@ -13,13 +13,18 @@ parser.add_argument("--cm", default=False, action="store_true", help="Create and
 parser.add_argument("--cmtime", default=0.0, type=float, help="Confusion matrix display duration")
 parser.add_argument("--save_dir", default="output/", help="Save results to the provided directory")
 parser.add_argument("--filename", default="Accuracies.log", help="Filename of the saved results")
+parser.add_argument("--trust_remote_code", default=False, action="store_true", help="Trust remote code during model initializing.")
+
 
 
 if __name__ == "__main__":
     args = parser.parse_args([] if "__file__" not in globals() else None)
     
     if args.pretrained:
-        model = SentenceTransformer(args.pretrained, trust_remote_code=True)
+        if args.trust_remote_code:
+            model = SentenceTransformer(args.pretrained,trust_remote_code=True)
+        else:
+            model = SentenceTransformer(args.pretrained)
     else:
         print("Local models are not supported now!")
         exit(0)
