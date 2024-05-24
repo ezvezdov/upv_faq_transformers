@@ -13,7 +13,7 @@ parser.add_argument("--cm", default=False, action="store_true", help="Create and
 parser.add_argument("--cmtime", default=0.0, type=float, help="Confusion matrix display duration")
 parser.add_argument("--save_dir", default="output/", help="Save results to the provided directory")
 parser.add_argument("--filename", default="Accuracies.log", help="Filename of the saved results")
-parser.add_argument("--trust_remote_code", default=False, action="store_true", help="Trust remote code during model initializing.")
+parser.add_argument("--trust_remote_code", default=False, action="store_true", help="Allow remote code execution during model initialization.")
 
 
 

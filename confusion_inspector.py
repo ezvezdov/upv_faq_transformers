@@ -5,7 +5,7 @@ from setence_transformers import SentenceTransformer
 parser = argparse.ArgumentParser()
 parser.add_argument("--pretrained", default="", help="Pretrained model from the huggingface")
 parser.add_argument("--questions", default="data/diacritics/FAQv5_questions.csv", help="Question data file")
-parser.add_argument("--trust_remote_code", default=False, action="store_true", help="Trust remote code during model initializing.")
+parser.add_argument("--trust_remote_code", default=False, action="store_true", help="Allow remote code execution during model initialization.")
 
 if __name__ == "__main__":
     args = parser.parse_args([] if "__file__" not in globals() else None)

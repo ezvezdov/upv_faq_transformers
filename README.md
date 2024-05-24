@@ -35,7 +35,7 @@
 
 - **filename**: Name of the file with evaluation results. (Default: Accuracies.log)
   
-- **trust_remote_code**: 
+- **trust_remote_code**: Allow remote code execution during model initialization
 
 ## Confusion inspector:
 
